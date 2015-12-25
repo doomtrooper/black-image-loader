@@ -7,6 +7,7 @@ import android.os.Environment;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 
 /**
  * Created by razor on 15/12/15.
@@ -15,22 +16,26 @@ public class DiskCache {
     public static final String TAG = DiskCache.class.getSimpleName();
     private static final String FILE_EXTENTION = ".png";
 
-    private static DiskCache mDiskCache;
+    private static DiskCache singleton;
 
     private static File mCacheDir;
     private static final String DISK_CACHE_SUBDIR = "thumbnails";
 
 
     public static DiskCache init(Context context){
-        mCacheDir = getDiskCacheDir(context, DISK_CACHE_SUBDIR);
-        if (mCacheDir.exists()){
-            mCacheDir.mkdirs();
+        if (singleton == null){
+            mCacheDir = getDiskCacheDir(context, DISK_CACHE_SUBDIR);
+            if (!mCacheDir.exists()){
+                mCacheDir.mkdirs();
+            }
+            singleton = new DiskCache();
         }
-        return new DiskCache();
+        return singleton;
     }
 
     public void putBitmap(String key, Bitmap bitmap) throws IOException {
-        File file = new File(mCacheDir, key + FILE_EXTENTION);
+        String filename = URLEncoder.encode(key, "UTF-8");
+        File file = new File(mCacheDir, filename + FILE_EXTENTION);
         FileOutputStream fOut = new FileOutputStream(file);
         bitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut);
         fOut.flush();
@@ -38,11 +43,12 @@ public class DiskCache {
     }
 
     public Bitmap getBitmap(String key) throws IOException {
+        String filename = URLEncoder.encode(key, "UTF-8");
         File[] files = mCacheDir.listFiles();
         if (files==null)
             return null;
         for (File file:files){
-            if (file.getName().equals(key)){
+            if (file.getName().equals(filename)){
                 Utilities.returnBitmapFromFile(file);
             }
         }

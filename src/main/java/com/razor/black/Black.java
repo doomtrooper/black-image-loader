@@ -37,6 +37,7 @@ public class Black {
     static final Handler HANDLER = new Handler(Looper.getMainLooper());
     private DiskCache mDiskCache;
     private FileCache mLruCache;
+    private boolean isLogEnabled = true;
 
 
 
@@ -62,6 +63,14 @@ public class Black {
             }
         }
         return singleton;
+    }
+
+    public boolean isLogEnabled() {
+        return isLogEnabled;
+    }
+
+    public void log(boolean isLog) {
+        this.isLogEnabled = isLog;
     }
 
     public static Black getInstance(){
