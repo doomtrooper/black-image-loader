@@ -23,7 +23,9 @@ public class BitmapDisplayer implements Runnable {
         if (bitmap != null){
             imageToLoad.getTargetImageview().setImageBitmap(bitmap);
         }else {
-            imageToLoad.getTargetImageview().setImageResource(Black.getErrorResourceDrawableId());
+            if (Black.getErrorResourceDrawableId() != null){
+                imageToLoad.getTargetImageview().setImageResource(Black.getErrorResourceDrawableId());
+            }
         }
     }
 }

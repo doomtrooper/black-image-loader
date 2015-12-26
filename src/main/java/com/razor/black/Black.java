@@ -38,7 +38,8 @@ public class Black {
     private Map<ImageView,String> imageviewsTargetMap;
     static ExecutorService executorService;
     static final Handler HANDLER = new Handler(Looper.getMainLooper());
-    private static int errorResourceId;
+    private static Integer errorResourceId;
+    private static Integer placeHolderResourceId;
     private final Object lock = new Object();
 
     private FileCache mLruCache;
@@ -96,6 +97,11 @@ public class Black {
 
     public Black loadImage(ImageView imageView, String url) {
         imageviewsTargetMap.put(imageView,url);
+        if (placeHolderResourceId == null){
+            imageView.setImageDrawable(null);
+        }else {
+            imageView.setImageResource(placeHolderResourceId);
+        }
         Bitmap bmp = null;
         try {
             bmp = getBitmapFromCache(url);
@@ -126,7 +132,16 @@ public class Black {
         errorResourceId = drawableId;
     }
 
-    public static int getErrorResourceDrawableId() {
+    public static Integer getErrorResourceDrawableId() {
         return errorResourceId;
+    }
+
+    public Black setPlaceHolder(@NonNull @DrawableRes int drawableId){
+        placeHolderResourceId = drawableId;
+        return singleton;
+    }
+
+    public static Integer getPlaceHolderResourceId() {
+        return placeHolderResourceId;
     }
 }
