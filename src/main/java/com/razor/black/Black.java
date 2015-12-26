@@ -35,7 +35,7 @@ public class Black {
     private Map<ImageView,String> imageviewsTargetMap;
     static ExecutorService executorService;
     static final Handler HANDLER = new Handler(Looper.getMainLooper());
-    private DiskCache mDiskCache;
+
     private FileCache mLruCache;
     private boolean isLogEnabled = true;
 
@@ -50,7 +50,6 @@ public class Black {
         this.mListener = listener;
         imageviewsTargetMap = new HashMap<>();
         executorService=Executors.newFixedThreadPool(5);
-        mDiskCache = DiskCache.init(mContext);
         mLruCache = FileCache.init();
     }
 
@@ -81,10 +80,6 @@ public class Black {
         return HANDLER;
     }
 
-    public DiskCache getDiskCache() {
-        return mDiskCache;
-    }
-
     public FileCache getLruCache() {
         return mLruCache;
     }
@@ -104,11 +99,6 @@ public class Black {
         bitmap = mLruCache.getBitmapFromMemCache(url);
         if (bitmap!=null){
             return bitmap;
-        }else {
-            bitmap = mDiskCache.getBitmap(url);
-            if (bitmap != null){
-                return bitmap;
-            }
         }
         return bitmap;
     }
