@@ -8,36 +8,36 @@ import android.util.Log;
 public class Logger {
 
     public static void d(String TAG, String message){
-        if (Black.getInstance().isLogEnabled()){
+        if (Black.isLogEnabled()){
             Log.d(TAG,message);
         }
     }
 
     public static void v(String TAG, String message){
-        if (Black.getInstance().isLogEnabled()){
+        if (Black.isLogEnabled()){
             Log.v(TAG, message);
         }
     }
     public static void e(String TAG, String message){
-        if (Black.getInstance().isLogEnabled()){
+        if (Black.isLogEnabled()){
             Log.e(TAG, message);
         }
     }
 
     public static void w(String TAG, String message){
-        if (Black.getInstance().isLogEnabled()){
+        if (Black.isLogEnabled()){
             Log.w(TAG, message);
         }
     }
 
     public static void i(String TAG, String message){
-        if (Black.getInstance().isLogEnabled()){
+        if (Black.isLogEnabled()){
             Log.i(TAG, message);
         }
     }
 
     public static void wtf(String TAG, String message){
-        if (Black.getInstance().isLogEnabled()){
+        if (Black.isLogEnabled()){
             Log.wtf(TAG, message);
         }
     }

@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.ImageView;
 
 import java.io.IOException;
@@ -35,10 +38,11 @@ public class Black {
     private Map<ImageView,String> imageviewsTargetMap;
     static ExecutorService executorService;
     static final Handler HANDLER = new Handler(Looper.getMainLooper());
+    private static int errorResourceId;
     private final Object lock = new Object();
 
     private FileCache mLruCache;
-    private boolean isLogEnabled = true;
+    private static boolean isLogEnabled = true;
 
 
 
@@ -59,19 +63,21 @@ public class Black {
             synchronized (Black.class){
                 if (singleton==null){
                     singleton = new Black(context);
+                    Logger.i(TAG,"Black instantiated.");
                 }
             }
         }
         return singleton;
     }
 
-    public boolean isLogEnabled() {
+    public static boolean isLogEnabled() {
         return isLogEnabled;
     }
 
     public Black log(boolean isLog) {
         synchronized (lock){
-            this.isLogEnabled = isLog;
+            isLogEnabled = isLog;
+            Logger.i(TAG,"Log status: "+String.valueOf(isLogEnabled));
         }
         return singleton;
     }
@@ -88,23 +94,39 @@ public class Black {
         return mLruCache;
     }
 
-    public void loadImage(ImageView imageView, String url) throws IOException {
+    public Black loadImage(ImageView imageView, String url) {
         imageviewsTargetMap.put(imageView,url);
-        Bitmap bmp = getBitmapFromCache(url);
+        Bitmap bmp = null;
+        try {
+            bmp = getBitmapFromCache(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.v(TAG, e.getMessage());
+        }
         if (bmp != null){
             imageView.setImageBitmap(bmp);
         }else {
             executorService.submit(new ImageLoader(new ImageToLoad(url, imageView)));
+            Logger.i(TAG,"Image loading Task submitted.");
         }
+        return singleton;
     }
 
     private Bitmap getBitmapFromCache(String url) throws IOException {
         Bitmap bitmap;
         bitmap = mLruCache.getBitmapFromMemCache(url);
         if (bitmap!=null){
+            Logger.i(TAG,"Bitmap Found in cache.");
             return bitmap;
         }
         return bitmap;
     }
 
+    public static void error(@NonNull @DrawableRes int drawableId){
+        errorResourceId = drawableId;
+    }
+
+    public static int getErrorResourceDrawableId() {
+        return errorResourceId;
+    }
 }

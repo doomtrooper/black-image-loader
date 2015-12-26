@@ -1,6 +1,7 @@
 package com.razor.black;
 
 import android.graphics.Bitmap;
+import android.support.annotation.WorkerThread;
 
 /**
  * Created by razor on 25/12/15.
@@ -15,10 +16,15 @@ public class ImageLoader implements Runnable {
         this.imageToLoad = imageToLoad;
     }
 
+    @WorkerThread
     @Override
     public void run() {
+        Logger.i(Black.TAG+" "+TAG,"Image Fetching started from Network.");
+        Logger.i(Black.TAG, "Fetching Image: " + imageToLoad.getImageUrl());
         Bitmap bitmap = Utilities.getBitmapFromURL(imageToLoad.getImageUrl());
-        Black.getInstance().getLruCache().addBitmapToMemoryCache(imageToLoad.getImageUrl(), bitmap);
-        Black.getHANDLER().post(new BitmapDisplayer(imageToLoad,bitmap));
+        if (bitmap != null){
+            Black.getInstance().getLruCache().addBitmapToMemoryCache(imageToLoad.getImageUrl(), bitmap);
+        }
+        Black.getHANDLER().post(new BitmapDisplayer(imageToLoad, bitmap));
     }
 }

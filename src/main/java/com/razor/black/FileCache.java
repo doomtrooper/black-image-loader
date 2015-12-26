@@ -1,6 +1,7 @@
 package com.razor.black;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.util.LruCache;
 
 /**
@@ -33,12 +34,14 @@ public class FileCache {
                 return bitmap.getByteCount() / GIGABYTE;
             }
         };
+        Logger.i(Black.TAG+" "+TAG,"Cache instantiated of size :"+String.valueOf(cacheSize)+" Bytes.");
     }
 
     public static FileCache init(){
         if (singleton==null){
             synchronized (FileCache.class){
                 if (singleton==null){
+                    Logger.i(TAG,"Cache instantiating.");
                     singleton = new FileCache();
                 }
             }
@@ -46,7 +49,7 @@ public class FileCache {
         return singleton;
     }
 
-    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+    public void addBitmapToMemoryCache(String key, @NonNull Bitmap bitmap) {
         if (getBitmapFromMemCache(key) == null) {
             mMemoryCache.put(key, bitmap);
         }
