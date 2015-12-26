@@ -35,6 +35,7 @@ public class Black {
     private Map<ImageView,String> imageviewsTargetMap;
     static ExecutorService executorService;
     static final Handler HANDLER = new Handler(Looper.getMainLooper());
+    private final Object lock = new Object();
 
     private FileCache mLruCache;
     private boolean isLogEnabled = true;
@@ -68,8 +69,11 @@ public class Black {
         return isLogEnabled;
     }
 
-    public void log(boolean isLog) {
-        this.isLogEnabled = isLog;
+    public Black log(boolean isLog) {
+        synchronized (lock){
+            this.isLogEnabled = isLog;
+        }
+        return singleton;
     }
 
     public static Black getInstance(){
