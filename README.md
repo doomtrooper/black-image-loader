@@ -2,10 +2,6 @@
 
 An light-weight android module to fetch images from Internet and load into respective views.The view must be a imageview or one of its sub-class.
 
-  - Type some Markdown on the left
-  - See HTML in the right
-  - Magic
-
 ### Version
 1.0.0
 
