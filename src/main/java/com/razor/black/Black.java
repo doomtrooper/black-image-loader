@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -95,13 +96,8 @@ public class Black {
         return mLruCache;
     }
 
-    public Black loadImage(ImageView imageView, String url) {
+    public Black loadImage(@Nullable ImageView imageView, String url) {
         imageviewsTargetMap.put(imageView,url);
-        if (placeHolderResourceId == null){
-            imageView.setImageDrawable(null);
-        }else {
-            imageView.setImageResource(placeHolderResourceId);
-        }
         Bitmap bmp = null;
         try {
             bmp = getBitmapFromCache(url);
@@ -112,8 +108,20 @@ public class Black {
         if (bmp != null){
             imageView.setImageBitmap(bmp);
         }else {
+            if (placeHolderResourceId == null){
+                imageView.setImageDrawable(null);
+            }else {
+                imageView.setImageResource(placeHolderResourceId);
+            }
             executorService.submit(new ImageLoader(new ImageToLoad(url, imageView)));
             Logger.i(TAG,"Image loading Task submitted.");
+        }
+        return singleton;
+    }
+
+    public Black loadImage( ImageView imageView, @NonNull @DrawableRes Integer drawableId){
+        if (imageView != null){
+            imageView.setImageResource(drawableId);
         }
         return singleton;
     }
